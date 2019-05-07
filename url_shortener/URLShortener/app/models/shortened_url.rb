@@ -32,4 +32,30 @@ class ShortenedURL < ActiveRecord::Base
         primary_key: :id,
         foreign_key: :user_id,
         class_name: 'User'
+        
+    has_many :visits,        
+        primary_key: :id,
+        foreign_key: :shortened_url_id,
+        class_name: 'Visit'
+
+    has_many :visitors,
+        Proc.new { distinct },
+        through: :visits,
+        source: :users
+
+    def num_clicks
+        visits.count
+    end
+
+    def num_uniques
+        #visitors.count
+        visits.select('user_id').distinct.count
+    end
+    
+    def num_recent_uniques
+        old_time = 10000.minutes.ago
+        #curr_time = Time.now
+        visits.select('user_id').where('created_at > ?', old_time).count
+        # visits.select('user_id').where('created_at BETWEEN ? AND ?', old_time, curr_time).count
+    end
 end
