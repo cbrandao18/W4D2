@@ -1,0 +1,13 @@
+### HAS MANY THROUGH ###
+example from lecture: user, chirps, and likes table
+likes is the joins table that hold which user_id liked which chirp_id
+
+for a user, we want to see liked_chirps
+
+in user.rb,
+    has_many :liked_chirps
+    through: likes
+    source: :chirp
+
+lines 7 and 8 will return a list of like objects, and then we are calling the chirp method on those to see a list of chirps that the user liked. this chirps method is in the likes model.
+
